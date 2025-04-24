@@ -17,7 +17,7 @@ WS_URL = "wss://allaboutberlin.com/api/appointments"
 # A link showing specifically month May of 2025 (timestamp is: May 30, 2025)
 # BOOKING_PAGE_MAY = "https://service.berlin.de/terminvereinbarung/termin/day/1748642400/"  
 
-BOOKING_PAGE = "https://service.berlin.de/terminvereinbarung/termin/day/"  # This month
+BOOKING_PAGE = "https://service.berlin.de/terminvereinbarung/termin/all/120686/"
 
 
 class Utils:
