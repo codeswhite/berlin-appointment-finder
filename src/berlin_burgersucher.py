@@ -24,6 +24,10 @@ class Utils:
         return date_str.split("T")[0]
 
     @staticmethod
+    def format_date(date: datetime.datetime) -> str:
+        return date.strftime("%Y-%m-%d")
+
+    @staticmethod
     def parse_date_arg(date_str: Optional[str]) -> Optional[datetime.datetime]:
         if not date_str or not Utils.strip_date(date_str):
             return None
@@ -92,11 +96,11 @@ class BurgeramtAppointmentSucher:
         message_text = f"Appointment found on <b>{Utils.strip_date(date_str)}</b>.\n\nBook here: {BOOKING_PAGE}\n\n"
         if self.appointment_since:
             message_text += (
-                f"\t(Its after: {Utils.strip_date(self.appointment_since)})\n"
+                f"\t(Its after: {Utils.format_date(self.appointment_since)})\n"
             )
         if self.appointment_before:
             message_text += (
-                f"\t(Its before: {Utils.strip_date(self.appointment_before)})\n"
+                f"\t(Its before: {Utils.format_date(self.appointment_before)})\n"
             )
         return message_text
 
