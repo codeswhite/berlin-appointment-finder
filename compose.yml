@@ -5,20 +5,3 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      POSTGRES_USER: burgersucher
-      POSTGRES_PASSWORD: burgersucher
-      POSTGRES_DB: burgersucher
-
-  postgres:
-    image: postgres:15
-    container_name: berlin-burgersucher-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: burgersucher
-      POSTGRES_PASSWORD: burgersucher
-      POSTGRES_DB: burgersucher
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
