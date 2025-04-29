@@ -22,11 +22,10 @@ def parse_date(date_str: Optional[str]) -> Optional[datetime.datetime]:
 
 
 def is_within_dates(
-    date_str: str,
+    date: datetime.datetime,
     from_date: Optional[datetime.datetime],
     to_date: Optional[datetime.datetime],
 ) -> bool:
-    date = datetime.datetime.fromisoformat(strip_date(date_str))
     if from_date and date < from_date:
         return False
     if to_date and date > to_date:

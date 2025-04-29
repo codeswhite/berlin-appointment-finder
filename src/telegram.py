@@ -1,3 +1,4 @@
+import datetime
 import os
 import signal
 import sys
@@ -16,7 +17,7 @@ from telegram.ext import (
     filters,
 )
 
-import src.utils
+from src import utils
 import logging
 
 load_dotenv()
@@ -53,8 +54,8 @@ class TelegramModule:
             exit(1)
 
         self.burger_sucher_task = None
-        self.app = None
-        self.appointment_dates = []
+        self.app: Application = None
+        self.appointment_dates: List[datetime.datetime] = []
 
     async def search_and_notify_user(self, user_id: int, user_data: dict) -> bool:
         if not user_id or not user_data:
@@ -64,19 +65,25 @@ class TelegramModule:
             self.logger.error("DEV ERR: User is not active")
             return False
 
-        date_from = user_data.get("date_from")
-        date_to = user_data.get("date_to")
+        date_from: Optional[datetime.datetime] = user_data.get("date_from")
+        date_to: Optional[datetime.datetime] = user_data.get("date_to")
 
-        appointments_found = []
-        for date_str in self.appointment_dates:
-            if src.utils.is_within_dates(date_str, date_from, date_to):
-                appointments_found.append(date_str)
+        appointments_found = list(
+            filter(
+                lambda date: utils.is_within_dates(date, date_from, date_to),
+                self.appointment_dates,
+            )
+        )
 
         if appointments_found:
             # Craft string
-            text = f"Appointment{'s' if len(appointments_found) > 1 else ''} found:"
-            for date_str in appointments_found:
-                text += f"\n* **{src.utils.strip_date(date_str)}**"
+            text = f"Appointment{'s' if len(appointments_found) > 1 else ''} found:\n"
+            for date in appointments_found:
+                text += f"\n- *{utils.format_date(date)}*"
+
+            self.logger.debug(
+                f"Sending message to user {user_id}: '{text}'"
+            )
 
             await self.app.bot.send_message(
                 chat_id=user_id,
@@ -87,7 +94,7 @@ class TelegramModule:
                         [
                             InlineKeyboardButton(
                                 text="➡️ Book here ⬅️",
-                                url=src.utils.BOOKING_PAGE,
+                                url=utils.BOOKING_PAGE,
                             )
                         ]
                     ]
@@ -110,8 +117,10 @@ class TelegramModule:
             await self.search_and_notify_user(user_id, user_data)
 
     async def new_appointments(self, appointment_dates: List[str]):
-        self.appointment_dates = appointment_dates
-        self.logger.info(f"New appointments batch: {appointment_dates}")
+        self.appointment_dates = list(map(utils.parse_date, appointment_dates))
+        self.logger.info(
+            f"New appointments batch: {list(map(utils.format_date, self.appointment_dates))}"
+        )
         await self.perform_bulk_search_and_notify()
 
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -187,26 +196,34 @@ class TelegramModule:
                         # parse date range
                         _from, _, _to = update.message.text.partition("to")
                         if _from:
-                            date_from = src.utils.parse_date(_from.strip())
+                            date_from = utils.parse_date(_from.strip())
                         if _to:
-                            date_to = src.utils.parse_date(_to.strip())
+                            date_to = utils.parse_date(_to.strip())
 
                     except ValueError:
-                        return await update.message.reply_text("Invalid format, try again")
+                        return await update.message.reply_text(
+                            "Invalid format, try again"
+                        )
                     except Exception:
-                        return await update.message.reply_text("Sorry I have an error, try again")
+                        return await update.message.reply_text(
+                            "Sorry I have an error, try again"
+                        )
                 else:
                     try:
-                        date = src.utils.parse_date(update.message.text)
+                        date = utils.parse_date(update.message.text)
                         if not date:
                             return await update.message.reply_text(
                                 "Sorry I have an error, try again",
                             )
                         date_to = date_from = date
                     except ValueError:
-                        return await update.message.reply_text("Invalid format, try again")
+                        return await update.message.reply_text(
+                            "Invalid format, try again"
+                        )
                     except Exception:
-                        return await update.message.reply_text("Sorry I have an error, try again")
+                        return await update.message.reply_text(
+                            "Sorry I have an error, try again"
+                        )
 
             # Store in user_data for persistence
             context.user_data["state"] = UserState.ACTIVE
@@ -223,9 +240,9 @@ class TelegramModule:
             if not found_from_cache:
                 await update.message.reply_text(
                     "Ok, I will let you know once I find an appointment for you."
-                    "\nBe quick!\n"
-                    f"{date_from and f'\nFrom: {src.utils.format_date(date_from)}' or ''}"
-                    f"{date_to and f'\nTo: {src.utils.format_date(date_to)}' or ''}"
+                    "\nBe quick to book it before others!\n"
+                    f"{date_from and f'\nFrom: {utils.format_date(date_from)}' or ''}"
+                    f"{date_to and f'\nTo: {utils.format_date(date_to)}' or ''}"
                     "\n\nTo stop receiving notifications, send /stop."
                 )
 
