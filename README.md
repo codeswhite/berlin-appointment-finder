@@ -32,7 +32,7 @@ docker run -d --env-file .env --name berlin-burgersucher berlin-burgersucher
 2. Run the following command:
 
 ```bash
-python src/berlin_burgersucher.py
+python -m src
 ```
 
 ## Plans and Todos
