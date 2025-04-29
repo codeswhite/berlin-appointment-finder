@@ -5,3 +5,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - ./bot_data.pkl:/app/bot_data.pkl
+
