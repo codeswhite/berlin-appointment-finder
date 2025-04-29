@@ -16,4 +16,4 @@ COPY . .
 # Use .env if present
 ENV PYTHONUNBUFFERED=1
 
-CMD ["python", "./src/berlin_burgersucher.py"]
+CMD ["python", "-m", "src"]

@@ -5,6 +5,3 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    # Uncomment below to mount code for live development
-    # volumes:
-    #   - ./:/app
