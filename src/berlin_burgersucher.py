@@ -27,9 +27,6 @@ class BurgeramtAppointmentSucher:
 
     def __init__(self, telegram: TelegramModule):
         self.telegram = telegram
-
-        # Top N - Between 1 and 5
-        self.send_top_n = max(1, min(5, int(os.getenv("SEND_TOP_N", 5))))
         self.logger.info("Initialized")
 
     async def listener_loop(self):
