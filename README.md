@@ -1,15 +1,28 @@
-# Berlin BurgerSucher Bot
+# Berlin Bürgeramt Telegram Bot (unofficial)
 
-A bot that checks for available appointments at the Burgeramt in Berlin.
-Notifies you via Telegram when an appointment is available.
+A Telegram bot that notifies you when new appointments are available at the Bürgeramt in Berlin.
+
+You can specify your preferred date (or date range).
+
+Try it out: 👉🏼 https://t.me/BerlinAppointmentFinderBot 👈🏼
 
 ### Inspiration
 
-This project was inspired (and based on) by [Nicolas Bouliane - Burgeramt Experiment](https://nicolasbouliane.com/blog/berlin-buergeramt-experiment)
-E.g.:
-![Chances of finding an appointment to the Burgeramt, by time of day](https://nicolasbouliane.com/images/appointment-availability.png)
+This project is based on the work done by [Nicolas Bouliane](https://nicolasbouliane.com/) - The author of [All About Berlin](https://allaboutberlin.com/).
 
-## Usage
+I recommend checking out his blog post about this:  
+[Nicolas Bouliane - Bürgeramt Experiment](https://nicolasbouliane.com/blog/berlin-buergeramt-experiment).  
+
+From the blog:
+![Chances of finding an appointment to the Bürgeramt, by time of day](https://nicolasbouliane.com/images/content2x/appointment-availability.webp)
+
+### How it works?
+
+1. The bot subscribes to the Websocket at `wss://allaboutberlin.com/api/appointments`
+2. When the bot receives an new set of appointments, it checks if any of them are in the preferred date range, for any user.
+3. If an appointment is found, the bot sends a message to the user.
+
+## Running
 
 ### Running with Docker
 
@@ -22,8 +35,8 @@ docker compose up -d
 or manually:
 
 ```bash
-docker build -t berlin-burgersucher .
-docker run -d --env-file .env --name berlin-burgersucher berlin-burgersucher
+docker build -t berlin-appointment-finder .
+docker run -d --env-file .env --name berlin-appointment-finder berlin-appointment-finder
 ```
 
 ### Running without Docker
@@ -36,10 +49,9 @@ python -m src
 ```
 
 ## Plans and Todos
-- Booking link should point to the month of the appointment.
-- Make an autonomous telegram bot for this.
 - Add support for Burgeramts in different cities.
 - Add support for other languages?
+- Booking link should point to the month of the appointment.
 
 ### License
 
@@ -47,5 +59,5 @@ MIT License
 
 ### Credits
 
-- [Max Grinberg](https://blog.maxcode.me)
-- [Nicolas Bouliane](https://nicolasbouliane.com/)
+- Max Grinberg - https://maxcode.me
+- Nicolas Bouliane - https://nicolasbouliane.com/
