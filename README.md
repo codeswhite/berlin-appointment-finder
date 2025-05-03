@@ -19,32 +19,36 @@ Cool insight from the blog:
 ### How it works?
 
 1. The bot subscribes to the Websocket at `wss://allaboutberlin.com/api/appointments` (source: https://github.com/All-About-Berlin/burgeramt-appointments)
-2. When the bot receives an new set of appointments, it checks if any of them are in the preferred date range, for any user.
-3. If an appointment is found, the bot sends a message to the user.
+2. When the bot receives a new set of appointments from the ws, it checks if any of them are in the preferred date range for any user.
+3. If appointments are found, the bot sends a message to the user.
 
 ## Running
 
 ### Running with Docker
 
-1. Copy the `.env.example` file to `.env` and fill in the required values
-2. Run the following command:
+First copy the `.env.example` file to `.env` and fill in the required values.
+
+#### With Compose
 
 ```bash
 docker compose up -d
 ```
-or manually:
+#### Without Compose
 
 ```bash
 docker build -t berlin-appointment-finder .
 docker run -d --env-file .env --name berlin-appointment-finder berlin-appointment-finder
 ```
 
-### Running without Docker
+### Local development
 
 1. Copy the `.env.example` file to `.env` and fill in the required values
-2. Run the following command:
+2. Run the following commands:
 
 ```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
 python -m src
 ```
 
@@ -52,7 +56,7 @@ python -m src
 - Add support for Burgeramts in different cities.
 - Add support for other languages?
 - Booking link should point to the month of the appointment.
-- Create an alternative setup (with docker compose) that will run in parallel to a locally-running https://github.com/All-About-Berlin/burgeramt-appointments, instead of connecting to the remote Websocket.
+- Add support for running a local instance of [the scrapper](https://github.com/All-About-Berlin/burgeramt-appointments) instead of using the remote one (maybe create an alternative compose.yml).
 
 ### License
 
