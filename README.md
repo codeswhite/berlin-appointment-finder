@@ -4,7 +4,7 @@ A Telegram bot that notifies you when new appointments are available at the Bür
 
 You can specify your preferred date (or date range).
 
-Try it out: 👉🏼 https://t.me/BerlinAppointmentFinderBot 👈🏼
+Try it out: 👉🏼 https://t.me/BurgeramtAppointmentFinderBot 👈🏼
 
 ### Inspiration
 
