@@ -5,6 +5,13 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    user: "appuser"
+    read_only: true
+    tmpfs:
+      - /tmp
     volumes:
-      - ./bot_data.pkl:/app/bot_data.pkl
-
+      - ./bot_data.pkl:/home/appuser/app/bot_data.pkl:rw
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL

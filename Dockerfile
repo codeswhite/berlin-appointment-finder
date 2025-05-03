@@ -2,18 +2,28 @@
 
 # --- Build stage ---
 FROM python:3.13-slim AS build
+
+# Install dependencies
 WORKDIR /app
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install --user -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install --prefix=/install -r requirements.txt
 
 # --- Runtime stage ---
 FROM python:3.13-slim AS runtime
-WORKDIR /app
-COPY --from=build /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-COPY . .
 
-# Use .env if present
-ENV PYTHONUNBUFFERED=1
+# Create non-root user
+RUN useradd -m appuser && mkdir /data
+
+# Set working directory
+WORKDIR /home/appuser/app
+
+# Copy only necessary files
+COPY --from=build /install /usr/local
+COPY src src
+
+# Permissions and env
+USER appuser
+ENV PATH="/usr/local/bin:$PATH" \
+    PYTHONUNBUFFERED=1
 
 CMD ["python", "-m", "src"]
