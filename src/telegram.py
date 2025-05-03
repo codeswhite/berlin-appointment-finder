@@ -154,6 +154,7 @@ class TelegramModule:
         await query.answer()
         if query.data == ButtonsEnum.START_ALL_APPOINTMENTS:
             context.user_data.update({"state": UserState.ACTIVE})
+            self.app.persistence.flush()
             await self.search_and_notify_user(
                 update.effective_user.id, context.user_data
             )
@@ -229,6 +230,7 @@ class TelegramModule:
             context.user_data["state"] = UserState.ACTIVE
             context.user_data["date_from"] = date_from
             context.user_data["date_to"] = date_to
+            self.app.persistence.flush()
             self.logger.debug(
                 f"Applied settings, user: {update.effective_user.id}, settings: {context.user_data}"
             )
@@ -245,10 +247,16 @@ class TelegramModule:
                     f"{date_to and f'\nTo: {utils.format_date(date_to)}' or ''}"
                     "\n\nTo stop receiving notifications, send /stop."
                 )
+            else:
+                await update.message.reply_text(
+                    "I will also notify you about future appointments."
+                    "\nTo stop receiving notifications, send /stop."
+                )
 
     async def stop_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         self.logger.debug(f"Stop command received, user: {update.effective_user.id}")
         context.user_data.clear()
+        self.app.persistence.flush()
         await update.message.reply_text(
             ("I won't bother you anymore.\n\nTo start again, send /start.")
         )
