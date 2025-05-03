@@ -11,14 +11,14 @@ Try it out: 👉🏼 https://t.me/BerlinAppointmentFinderBot 👈🏼
 This project is based on the work done by [Nicolas Bouliane](https://nicolasbouliane.com/) - The author of [All About Berlin](https://allaboutberlin.com/).
 
 I recommend checking out his blog post about this:  
-[Nicolas Bouliane - Bürgeramt Experiment](https://nicolasbouliane.com/blog/berlin-buergeramt-experiment).  
+[Nicolas Bouliane - Bürgeramt Experiment](https://nicolasbouliane.com/blog/berlin-buergeramt-experiment).
 
-From the blog:
+Cool insight from the blog:
 ![Chances of finding an appointment to the Bürgeramt, by time of day](https://nicolasbouliane.com/images/content2x/appointment-availability.webp)
 
 ### How it works?
 
-1. The bot subscribes to the Websocket at `wss://allaboutberlin.com/api/appointments`
+1. The bot subscribes to the Websocket at `wss://allaboutberlin.com/api/appointments` (source: https://github.com/All-About-Berlin/burgeramt-appointments)
 2. When the bot receives an new set of appointments, it checks if any of them are in the preferred date range, for any user.
 3. If an appointment is found, the bot sends a message to the user.
 
@@ -52,6 +52,7 @@ python -m src
 - Add support for Burgeramts in different cities.
 - Add support for other languages?
 - Booking link should point to the month of the appointment.
+- Create an alternative setup (with docker compose) that will run in parallel to a locally-running https://github.com/All-About-Berlin/burgeramt-appointments, instead of connecting to the remote Websocket.
 
 ### License
 
