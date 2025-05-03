@@ -51,8 +51,8 @@ class BurgeramtAppointmentSucher:
                                 self.logger.error(f"Error parsing event: {e}")
                                 continue
                             await self.telegram.new_appointments(event.appointmentDates)
-                except websockets.exceptions.ConnectionClosedError:
-                    self.logger.error("Connection closed, retrying in 5 sec")
+                except Exception as e:
+                    self.logger.error(f"Connection closed, retrying in 5 sec.. Error was: {e}")
                     await asyncio.sleep(5)
         except asyncio.CancelledError:
             self.logger.info("WS Listener stopped")
