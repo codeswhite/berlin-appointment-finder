@@ -1,7 +1,7 @@
 services:
-  berlin-burgersucher:
+  berlin-appointment-finder:
     build: .
-    container_name: berlin-burgersucher
+    container_name: berlin-appointment-finder
     restart: unless-stopped
     env_file:
       - .env

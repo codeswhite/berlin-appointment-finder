@@ -28,7 +28,7 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-# Set lower log level for httpx
+# Set lower log level for httpx (so noisy!)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
@@ -53,7 +53,7 @@ class TelegramModule:
             self.logger.error("Telegram credentials (TELEGRAM_BOT_TOKEN) not set.")
             exit(1)
 
-        self.burger_sucher_task = None
+        self.appointment_finder_task = None
         self.app: Application = None
         self.appointment_dates: List[datetime.datetime] = []
 
@@ -254,18 +254,17 @@ class TelegramModule:
         )
 
     async def post_init(self, app: Application):
-        # self.app = app
         # Import here to avoid circular import
-        from src.berlin_burgersucher import BurgeramtAppointmentSucher
+        from src.appointment_finder import BurgeramtAppointmentFinder
 
-        self.burger_sucher_task = app.create_task(
-            BurgeramtAppointmentSucher(self).listener_loop()
+        self.appointment_finder_task = app.create_task(
+            BurgeramtAppointmentFinder(self).listener_loop()
         )
 
     async def post_stop(self, app: Application):
-        if self.burger_sucher_task:
-            self.burger_sucher_task.cancel()
-            await self.burger_sucher_task
+        if self.appointment_finder_task:
+            self.appointment_finder_task.cancel()
+            await self.appointment_finder_task
             self.logger.info("Background task cancelled cleanly.")
 
     def run(self):
@@ -280,7 +279,6 @@ class TelegramModule:
             .build()
         )
         self.app.add_handler(CommandHandler("start", self.start_command))
-        # self.app.add_handler(CommandHandler("format", self.help_format))
         self.app.add_handler(CommandHandler("help", self.help_command))
         self.app.add_handler(CommandHandler("usage", self.help_command))
         self.app.add_handler(CommandHandler("about", self.help_command))

@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os
 from typing import List, Optional
 
 import websockets
@@ -22,7 +21,7 @@ class AppointmentEvent(BaseModel):
     lastAppointmentsFoundOn: str
 
 
-class BurgeramtAppointmentSucher:
+class BurgeramtAppointmentFinder:
     logger = logging.getLogger(__name__)
 
     def __init__(self, telegram: TelegramModule):
@@ -41,7 +40,9 @@ class BurgeramtAppointmentSucher:
                             try:
                                 event = AppointmentEvent.parse_raw(message)
                                 if event.status != 200:
-                                    self.logger.error(f"Event status is not 200: {event.status}")
+                                    self.logger.error(
+                                        f"Event status is not 200: {event.status}"
+                                    )
                                     self.logger.error(f"Event message: {event.message}")
                                     continue
                             except Exception as e:
@@ -49,8 +50,9 @@ class BurgeramtAppointmentSucher:
                                 continue
                             await self.telegram.new_appointments(event.appointmentDates)
                 except Exception as e:
-                    self.logger.error(f"Connection closed, retrying in 5 sec.. Error was: {e}")
+                    self.logger.error(
+                        f"Connection closed, retrying in 5 sec.. Error was: {e}"
+                    )
                     await asyncio.sleep(5)
         except asyncio.CancelledError:
             self.logger.info("WS Listener stopped")
-
