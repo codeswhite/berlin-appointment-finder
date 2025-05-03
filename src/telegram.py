@@ -192,14 +192,20 @@ class TelegramModule:
         if context.user_data.get("state") == UserState.SETTING_RANGE:
             date_from = date_to = None
             if update.message and update.message.text:
-                if "to" in update.message.text:
+                text = update.message.text.strip().lower()
+                if "to" in text:
                     try:
                         # parse date range
-                        _from, _, _to = update.message.text.partition("to")
+                        _from, _, _to = text.partition("to")
                         if _from:
                             date_from = utils.parse_date(_from.strip())
                         if _to:
                             date_to = utils.parse_date(_to.strip())
+
+                        if date_from and date_to and date_from > date_to:
+                            return await update.message.reply_text(
+                                "Start date must be before end date"
+                            )
 
                     except ValueError:
                         return await update.message.reply_text(
@@ -211,7 +217,7 @@ class TelegramModule:
                         )
                 else:
                     try:
-                        date = utils.parse_date(update.message.text)
+                        date = utils.parse_date(text)
                         if not date:
                             return await update.message.reply_text(
                                 "Sorry I have an error, try again",
@@ -232,7 +238,7 @@ class TelegramModule:
             context.user_data["date_to"] = date_to
             self.app.persistence.flush()
             self.logger.debug(
-                f"Applied settings, user: {update.effective_user.id}, settings: {context.user_data}"
+                f"Applied dates range for user: {update.effective_user.id}, date_from: {date_from}, date_to: {date_to}"
             )
 
             # Run check immediately
