@@ -10,8 +10,12 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ./data/:/app/data/:rw
+      - appointment-finder-bot-data:/app/data/:rw
+      # - ./data/:/app/data/:rw
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
+
+volumes:
+  appointment-finder-bot-data:
