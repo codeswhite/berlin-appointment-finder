@@ -161,6 +161,9 @@ class TelegramModule:
             await query.edit_message_text(
                 "You will be notified about all future appointment openings."
             )
+            self.logger.info(
+                f"User {update.effective_user.id} subscribed to all appointments"
+            )
             return
 
         elif query.data == ButtonsEnum.START_SET_RANGE:
@@ -242,6 +245,9 @@ class TelegramModule:
             self.logger.debug(
                 f"Applied dates range for user: {update.effective_user.id}, date_from: {date_from}, date_to: {date_to}"
             )
+            self.logger.info(
+                f"User {update.effective_user.id} subscribed to appointments range"
+            )
 
             # Run check immediately
             found_from_cache = await self.search_and_notify_user(
@@ -267,6 +273,9 @@ class TelegramModule:
         await self.app.persistence.flush()
         await update.message.reply_text(
             ("I won't bother you anymore.\n\nTo start again, send /start.")
+        )
+        self.logger.info(
+            f"User {update.effective_user.id} not receiving notifications anymore"
         )
 
     async def post_init(self, app: Application):
