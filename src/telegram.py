@@ -173,6 +173,7 @@ class TelegramModule:
                 parse_mode="Markdown",
             )
             context.user_data.update({"state": UserState.SETTING_RANGE})
+            await self.app.persistence.flush()
             return
 
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
