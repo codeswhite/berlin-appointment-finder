@@ -10,7 +10,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ./bot_data.pkl:/home/appuser/app/bot_data.pkl:rw
+      - ./data/:/app/data/
     security_opt:
       - no-new-privileges:true
     cap_drop:

@@ -283,7 +283,7 @@ class TelegramModule:
 
     def run(self):
         self.logger.info("Starting Telegram bot...")
-        persistence = PicklePersistence(filepath="bot_data.pkl")
+        persistence = PicklePersistence(filepath="data/bot_data.pkl")
         self.app = (
             Application.builder()
             .persistence(persistence)

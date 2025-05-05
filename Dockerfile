@@ -12,10 +12,10 @@ RUN pip install --upgrade pip && pip install --prefix=/install -r requirements.t
 FROM python:3.13-slim AS runtime
 
 # Create non-root user
-RUN useradd -m appuser && mkdir /data
+RUN useradd -m appuser && mkdir /app && chown appuser:appuser /app
 
 # Set working directory
-WORKDIR /home/appuser/app
+WORKDIR /app
 
 # Copy only necessary files
 COPY --from=build /install /usr/local
