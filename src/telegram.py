@@ -23,7 +23,7 @@ import logging
 load_dotenv()
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=os.getenv("LOG_LEVEL", "INFO"),
     stream=sys.stdout,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
@@ -207,7 +207,6 @@ class TelegramModule:
                             return await update.message.reply_text(
                                 "Start date must be before end date"
                             )
-
                     except ValueError:
                         return await update.message.reply_text(
                             "Invalid format, try again"
@@ -234,9 +233,11 @@ class TelegramModule:
                         )
 
             # Store in user_data for persistence
-            context.user_data["state"] = UserState.ACTIVE
-            context.user_data["date_from"] = date_from
-            context.user_data["date_to"] = date_to
+            context.user_data.update({
+                "state": UserState.ACTIVE,
+                "date_from": date_from,
+                "date_to": date_to
+            })
             await self.app.persistence.flush()
             self.logger.debug(
                 f"Applied dates range for user: {update.effective_user.id}, date_from: {date_from}, date_to: {date_to}"
