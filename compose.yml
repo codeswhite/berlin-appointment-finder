@@ -10,7 +10,7 @@ services:
     tmpfs:
       - /tmp
     volumes:
-      - ./data/:/app/data/
+      - ./data/:/app/data/:rw
     security_opt:
       - no-new-privileges:true
     cap_drop:
